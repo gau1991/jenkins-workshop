@@ -1,0 +1,30 @@
+[MASTER]
+ignore=.serverless,node_modules,test_data
+
+disable=
+    missing-docstring,
+    unused-argument,
+    no-self-use,
+    fixme,
+    broad-except,
+    too-few-public-methods,
+    line-too-long,
+    no-name-in-module,
+    import-error,
+    invalid-name,
+    no-member
+
+
+[SIMILARITIES]
+
+# Minimum lines number of a similarity.
+min-similarity-lines=10
+
+# Ignore comments when computing similarities.
+ignore-comments=yes
+
+# Ignore docstrings when computing similarities.
+ignore-docstrings=yes
+
+# Ignore imports when computing similarities.
+ignore-imports=no
