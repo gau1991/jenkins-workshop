@@ -100,3 +100,89 @@ sudo apt update
 3. At line no. `25, 26 and 32`, replace `gau1991` with your Docker Hub login id.
 
 4. At bottom of page click on `Commit Changes`
+
+### Pre Job Setup
+
+1. Now go to command prompt and check whether minikube is running or not
+
+    ```bash
+    sudo minikube status
+    ```
+
+    if minikube is not running, then start it with
+
+    ```bash
+    sudo minikube start
+    ```
+
+2. Install the required packages
+
+    ```bash
+    sudo apt update
+    sudo apt install python3 python3-pip git
+    sudo pip3 install django pylint
+    ```
+
+3. Now copy kubectl config to Jenkins home directory
+
+    ```bash
+    sudo cp -r $HOME/.minikube $HOME/.kube /var/lib/jenkins/
+    sudo chown -R jenkins: /var/lib/jenkins
+    ```
+
+4. Add Jenkins user to docker group and restart the Jenkins
+
+    ```bash
+    sudo usermod -aG docker jenkins
+    sudo service jenkins restart
+    ```
+
+5. Now open the file `/var/lib/jenkins/.kube/config` in editor and replace all the `/home/ubuntu` with `/var/lib/jenkins`
+
+    ```bash
+    sudo vim /var/lib/jenkins/.kube/config
+    ```
+
+6. Switch to jenkins user
+
+    ```bash
+    sudo su - jenkins
+    ```
+
+7. Run the kubectl command to see whether kubectl is connecting to minikube
+
+    ```bash
+    kubectl get pods -A
+    docker ps
+    ```
+
+8. At the end, login to Docker Hub using following command
+
+    ```bash
+    docker login
+    ```
+
+### Job Creation
+
+1. Login to Jenkins and click on `create new jobs`
+
+2. Give name as `ci-cd` and click `pipeline` project. Now click on `Ok`
+
+3. In configuration page, for `general` section select `GitHub project` and in project url field give your forked github project url
+
+4. In `Build Triggers` section, select `Poll SCM` checkbox and in text area give `H/5 * * * *`
+
+5. In `Pipeline` section, for `Definition` select `Pipeline Script from SCM`. For `SCM`, select `Git` from dropdown. For `Repository URL` section, give your forked repo url.
+
+6. Click on `Save`
+
+### Launch the deployment
+
+1. Job will fail beacause we don't have deployment running for my server. So to create deployment use following command
+
+    ```bash
+    kubectl create deployment --image gau1991/sample-demo-app:1 myserver
+    kubectl expose deployment myserver --type=NodePort --port=8000
+    ```
+
+2. Now retrigger job from Jenkins by click `Build Now` Button

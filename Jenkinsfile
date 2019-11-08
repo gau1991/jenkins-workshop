@@ -29,7 +29,7 @@ pipeline {
 
       stage('Deploy') {
          steps {
-             sh "kubectl set image deployments/myserver myserver=gau1991/sample-demo-app:${env.BUILD_NUMBER}"
+             sh "kubectl set image deployments/myserver sample-demo-app=gau1991/sample-demo-app:${env.BUILD_NUMBER}"
          }
       }
    }
